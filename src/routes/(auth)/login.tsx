@@ -1,10 +1,34 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Input from '../../components/Input'
+import Button from '../../components/Button'
+import { loginSchema, type LoginInput } from '../../lib/validation'
 
 export const Route = createFileRoute('/(auth)/login')({
   component: LoginScreen,
 })
 
 function LoginScreen() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      remember: false,
+    },
+  })
+
+  const onSubmit = (data: LoginInput) => {
+    console.log('Login data:', data)
+    // In a real app, you would make an API call here
+    alert(`Login successful! Welcome ${data.email}`)
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F7F8F9] p-4">
       {/* Main container matching design size */}
@@ -19,36 +43,35 @@ function LoginScreen() {
           </p>
         </div>
 
-        {/* Form fields */}
-        <div className="absolute top-[140px] left-[20px] w-[335px]">
+        {/* Form */}
+        <form onSubmit={handleSubmit(onSubmit)} className="absolute top-[140px] left-[20px] w-[335px]">
           {/* Email Address */}
-          <div className="mb-6">
-            <label className="block text-[13px] leading-[17px] text-[#6C25FF] font-['Rubik'] mb-1">
-              Email Address
-            </label>
-            <input
-              type="email"
-              className="w-full h-[40px] border border-[#CBCBCB] rounded-[6px] px-4 text-[#1D2226] font-['Rubik']"
-              placeholder="Enter your email"
-            />
-          </div>
+          <Input
+            label="Email Address"
+            type="email"
+            placeholder="Enter your email"
+            error={errors.email}
+            {...register('email')}
+          />
 
           {/* Password */}
-          <div className="mb-6">
-            <label className="block text-[13px] leading-[17px] text-[#6C25FF] font-['Rubik'] mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              className="w-full h-[40px] border border-[#CBCBCB] rounded-[6px] px-4 text-[#1D2226] font-['Rubik']"
-              placeholder="Enter your password"
-            />
-          </div>
+          <Input
+            label="Password"
+            type="password"
+            placeholder="Enter your password"
+            error={errors.password}
+            {...register('password')}
+          />
 
           {/* Remember me & Forgot password */}
           <div className="flex justify-between items-center mb-8">
             <div className="flex items-center">
-              <input type="checkbox" id="remember" className="mr-2" />
+              <input
+                type="checkbox"
+                id="remember"
+                className="mr-2"
+                {...register('remember')}
+              />
               <label htmlFor="remember" className="text-[13px] text-[#919191] font-['Rubik']">
                 Remember me
               </label>
@@ -57,12 +80,18 @@ function LoginScreen() {
               Forgot password?
             </a>
           </div>
-        </div>
 
-        {/* Sign In Button */}
-        <button className="absolute top-[736px] left-[20px] w-[335px] h-[46px] bg-[#6C25FF] rounded-[6px] text-white font-medium text-[16px] leading-[17px] font-['Rubik']">
-          Sign In
-        </button>
+          {/* Sign In Button */}
+          <Button
+            type="submit"
+            variant="primary"
+            fullWidth
+            className="absolute top-[736px] left-0 w-[335px] h-[46px]"
+            loading={isSubmitting}
+          >
+            Sign In
+          </Button>
+        </form>
 
         {/* Don't have an account? Register Button */}
         <Link

@@ -51,8 +51,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
       </head>
-      <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">      
-        {children}        
+      <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">
+        <div className="min-h-screen flex items-center justify-center bg-[#F7F8F9] p-4">
+          {/* Main container matching design size */}
+          <div className="relative w-[375px] h-[812px] bg-[#F7F8F9] overflow-hidden">
+            {children}
+          </div>
+        </div>
         <TanStackDevtools
           config={{
             position: 'bottom-right',
