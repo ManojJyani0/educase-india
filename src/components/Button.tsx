@@ -1,13 +1,34 @@
 import { type ButtonHTMLAttributes, forwardRef } from 'react'
+import { Link, type LinkProps } from '@tanstack/react-router'
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface BaseButtonProps {
   variant?: 'primary' | 'secondary' | 'danger' | 'outline' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
   fullWidth?: boolean
   loading?: boolean
+  disabled?: boolean
+  className?: string
+  onClick?: React.MouseEventHandler<HTMLElement>
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+interface ButtonAsButtonProps extends BaseButtonProps, Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick' | 'className'> {
+  href?: never
+  to?: never
+}
+
+interface ButtonAsAnchorProps extends BaseButtonProps, Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'onClick' | 'className'> {
+  href: string
+  to?: never
+}
+
+interface ButtonAsLinkProps extends BaseButtonProps, Omit<LinkProps, 'to' | 'onClick' | 'className'> {
+  to: LinkProps['to']
+  href?: never
+}
+
+type ButtonProps = ButtonAsButtonProps | ButtonAsAnchorProps | ButtonAsLinkProps
+
+const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   (
     {
       children,
@@ -16,7 +37,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       fullWidth = false,
       loading = false,
       className = '',
-      disabled,
+      disabled = false,
+      onClick,
+      href,
+      to,
       ...props
     },
     ref
@@ -39,21 +63,71 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     
     const widthClass = fullWidth ? 'w-full' : ''
     
+    const combinedClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClass} ${className}`
+    
+    const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+      if (disabled || loading) {
+        e.preventDefault()
+        e.stopPropagation()
+        return
+      }
+      onClick?.(e)
+    }
+    
+    const commonProps = {
+      className: combinedClasses,
+      'aria-disabled': disabled || loading,
+      onClick: handleClick,
+    }
+    
+    // Loading content
+    const content = loading ? (
+      <div className="flex items-center justify-center">
+        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+        <span className="ml-2">Loading...</span>
+      </div>
+    ) : (
+      children
+    )
+    
+    // Render as anchor if href is provided
+    if (href) {
+      return (
+        <a
+          ref={ref as React.Ref<HTMLAnchorElement>}
+          href={disabled || loading ? undefined : href}
+          {...commonProps}
+          {...props as React.AnchorHTMLAttributes<HTMLAnchorElement>}
+        >
+          {content}
+        </a>
+      )
+    }
+    
+    // Render as Link if to is provided
+    if (to) {
+      return (
+        <Link
+          ref={ref as React.Ref<HTMLAnchorElement>}
+          to={to}
+          {...commonProps}
+          {...props as LinkProps}
+          disabled={disabled || loading}
+        >
+          {content}
+        </Link>
+      )
+    }
+    
+    // Default render as button
     return (
       <button
-        ref={ref}
-        className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClass} ${className}`}
+        ref={ref as React.Ref<HTMLButtonElement>}
         disabled={disabled || loading}
-        {...props}
+        {...commonProps}
+        {...props as ButtonHTMLAttributes<HTMLButtonElement>}
       >
-        {loading ? (
-          <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-            <span className="ml-2">Loading...</span>
-          </div>
-        ) : (
-          children
-        )}
+        {content}
       </button>
     )
   }
