@@ -1,204 +1,148 @@
-Welcome to your new TanStack Start app! 
+# PropX - Property Management Platform
 
-# Getting Started
+A modern property management web application built with React, TypeScript, and TanStack technologies. This platform provides authentication, user profiles, and account management features for property agencies and individual users.
 
-To run this application:
+## Features
+
+- **User Authentication**: Secure login and registration with form validation
+- **User Profiles**: View and manage account settings with profile image upload
+- **Responsive Design**: Mobile-first responsive UI built with Tailwind CSS
+- **Form Validation**: Robust form handling with React Hook Form and Zod schemas
+- **State Management**: Context API for authentication state management
+- **Modern Routing**: File-based routing with TanStack Router
+- **Data Fetching**: TanStack Query for efficient server state management
+
+## Tech Stack
+
+- **Frontend**: React 19, TypeScript
+- **Routing**: TanStack Router (file-based routing)
+- **Styling**: Tailwind CSS
+- **Forms**: React Hook Form with Zod validation
+- **State**: TanStack Query, React Context
+- **Build Tool**: Vite
+- **Package Manager**: pnpm
+
+## Project Structure
+
+```
+educase-india/
+├── src/
+│   ├── components/     # Reusable UI components (Button, Input, etc.)
+│   ├── contexts/       # React contexts (AuthContext)
+│   ├── routes/         # File-based routes
+│   │   ├── (auth)/     # Authentication routes (login, register)
+│   │   ├── _app/       # Authenticated app routes
+│   │   ├── __root.tsx  # Root layout
+│   │   └── index.tsx   # Landing page
+│   ├── lib/           # Utility libraries (validation schemas)
+│   └── integrations/   # Third-party integrations
+├── public/            # Static assets
+└── package.json       # Dependencies and scripts
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- pnpm (recommended) or npm
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
 
 ```bash
 pnpm install
+```
+
+### Development
+
+Start the development server:
+
+```bash
 pnpm dev
 ```
 
-# Building For Production
+The application will be available at `http://localhost:3000`
 
-To build this application for production:
+### Building for Production
+
+Create a production build:
 
 ```bash
 pnpm build
 ```
 
-## Testing
-
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+Preview the production build:
 
 ```bash
-pnpm test
+pnpm preview
+```
+
+## Available Scripts
+
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm preview` - Preview production build
+- `pnpm test` - Run tests with Vitest
+- `pnpm lint` - Run ESLint
+- `pnpm format` - Check code formatting with Prettier
+- `pnpm check` - Format and fix linting issues
+
+## Key Components
+
+### Authentication
+- **AuthContext**: Manages user authentication state with login, register, and logout functionality
+- **Login/Register Forms**: Validated forms with Zod schemas for secure user authentication
+
+### UI Components
+- **Button**: Customizable button component with primary/secondary variants
+- **Input**: Form input component with validation error display
+- **Header/Footer**: Layout components for consistent UI
+
+### Pages
+- **Landing Page**: Welcome screen with call-to-action buttons
+- **Login/Register**: Authentication pages with form validation
+- **Account Settings**: User profile management page
+
+## Form Validation
+
+The application uses Zod for schema validation with React Hook Form integration:
+
+```typescript
+// Example validation schema
+export const loginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(1, 'Password is required'),
+  remember: z.boolean().optional(),
+})
 ```
 
 ## Styling
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
-
-### Removing Tailwind CSS
-
-If you prefer not to use Tailwind CSS:
-
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Uninstall the packages: `pnpm add @tailwindcss/vite tailwindcss --dev`
-
-## Linting & Formatting
-
-
-This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
-
-```bash
-pnpm lint
-pnpm format
-pnpm check
-```
-
-
+This project uses Tailwind CSS for styling with custom configuration:
+- Custom color palette matching the design system
+- Responsive breakpoints for mobile-first design
+- Custom font configurations
 
 ## Routing
 
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
+The application uses TanStack Router with file-based routing:
+- Routes are automatically generated from files in `src/routes/`
+- Nested layouts for authenticated vs public routes
+- Type-safe route parameters and navigation
 
-### Adding A Route
+## Development Notes
 
-To add a new route to your application just add a new file in the `./src/routes` directory.
+- The project includes React DevTools and TanStack DevTools for development
+- ESLint and Prettier are configured for code quality
+- TypeScript strict mode is enabled for type safety
 
-TanStack will automatically generate the content of the route file for you.
+## Learn More
 
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+- [TanStack Router Documentation](https://tanstack.com/router)
+- [TanStack Query Documentation](https://tanstack.com/query)
+- [React Documentation](https://react.dev)
+- [Tailwind CSS Documentation](https://tailwindcss.com)
+- [Vite Documentation](https://vitejs.dev)

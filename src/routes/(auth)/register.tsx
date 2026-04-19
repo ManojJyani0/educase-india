@@ -85,7 +85,7 @@ function RegisterScreen() {
           type="text"
           placeholder="Company Name"
           {...register('companyName')}
-          error={errors.confirmPassword}
+          error={errors.companyName}
         />
         <div className='text-[#1D2226] align-text-left pb-3'>
           <p>Are you Agency?</p>
