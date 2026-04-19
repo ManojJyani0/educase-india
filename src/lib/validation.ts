@@ -5,11 +5,11 @@ export const registerSchema = z.object({
   phone: z.string(),
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string().min(1, 'Please confirm your password'),
+  companyName: z.string().min(1, 'Please company name'),
   isAgency: z.boolean()
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ['confirmPassword'],  
+}).refine((data) => data.isAgency, {
+  message: "Company name is required",
+  path: ['companyName'],  
 })
 
 export const loginSchema = z.object({

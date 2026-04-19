@@ -25,7 +25,7 @@ function RegisterScreen() {
       phone: '',
       email: '',
       password: '',
-      confirmPassword: '',
+      companyName: '',
       isAgency: false
     },
   })
@@ -83,8 +83,8 @@ function RegisterScreen() {
         <Input
           label="Company Name"
           type="text"
-          placeholder="Confirm your password"
-          {...register('confirmPassword')}
+          placeholder="Company Name"
+          {...register('companyName')}
           error={errors.confirmPassword}
         />
         <div className='text-[#1D2226] align-text-left pb-3'>
